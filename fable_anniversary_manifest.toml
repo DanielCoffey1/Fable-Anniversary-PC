@@ -9,3 +9,15 @@ game_root = "game"
 file_path = "game/default.xex"
 out_directory_path = "generated/default"
 includes = []
+
+# Verified in the locally loaded, SHA-256-pinned Anniversary executable.
+[entrypoint.functions]
+0x83BDB968 = { name = "VectorBasisLeaf_83BDB968", size = 0xE4 }
+0x83BF1748 = { name = "AdvanceMemberIterator_83BF1748", size = 0x7C }
+0x83A54288 = { name = "OptionalMemberLeaf_83A54288", size = 0x24 }
+0x83224998 = { name = "EmbeddedMemberThunk_83224998", size = 0x8 }
+0x83224970 = { name = "EmbeddedMemberThunk_83224970", size = 0x8 }
+0x83858F98 = { name = "TailThunk_83858F98", size = 0x4 }
+# Separate the preceding non-returning bugcheck stub from the context-switch body.
+0x839F3810 = { name = "ContextBugcheckStub_839F3810", size = 0x10 }
+0x839F3820 = { name = "ContextSwitchBody_839F3820", size = 0x40C }

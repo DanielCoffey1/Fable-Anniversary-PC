@@ -38,7 +38,7 @@ if ($ConfigureOnly) { return }
 if ($LASTEXITCODE -ne 0) { throw 'Native build failed; inspect compiler diagnostics.' }
 # The recompiler can emit fatal branch placeholders that still compile as C++.
 $unresolved = Get-ChildItem (Join-Path $projectRoot 'generated/default') -Filter '*.cpp' |
-    Select-String -SimpleMatch 'REX_FATAL("Unresolved branch'
+    Select-String -Pattern 'REX_FATAL\("Unresolved (branch|call)'
 if ($unresolved) {
     $unresolved | ForEach-Object { Write-Warning "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" }
     throw 'Generated code contains unresolved branch traps; fix function boundaries before running.'
