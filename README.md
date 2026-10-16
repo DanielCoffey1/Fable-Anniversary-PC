@@ -23,7 +23,7 @@ Do not re-run project initialization over customized sources. Do not reuse Fable
 
 ## Albion Reborn
 
-Integration will follow successful standalone gameplay, controls/audio, rendering, save/reload, and pacing tests. No launcher support or downloadable runtime is claimed yet.
+Albion Reborn now discovers this built local project through `tools/run.ps1` and launches it from the Anniversary card. The installed launcher's Play button was tested: the resulting native process used borderless fullscreen, the selected 1440p resolution, full resolve readback, synchronous shader compilation, and the validated 30 FPS cap. The existing user-data/save location is preserved. Anniversary's ISO installer and downloadable runtime package are not yet included in Albion Reborn.
 
 ## Build dependency handling
 

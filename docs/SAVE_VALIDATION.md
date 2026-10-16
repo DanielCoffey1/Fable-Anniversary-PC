@@ -9,3 +9,5 @@ A fresh manual save at 12:18:30 EDT on October 16, 2026 changed the manual-slot 
 After the user reached the Heroes' Guild, the autosave updated at 12:25:49 EDT (SHA-256 `8380D96378EDEF8A866A2158A4758E4EAC5827CD71E6869C9CBFE853DD5B50D8`) and the quest checkpoint updated at 12:26:02 (SHA-256 `D588143919FA97BC6B1427745328F4074DB73CE2DA42EC6C741F3CD793FB8FED`). Manual slots Save1 and Save2 subsequently contained the new checkpoint, rather than the earlier Oakvale checkpoint. The Guild files were backed up before restarting for a manual-slot reload test, whose result is pending.
 
 The observed checkpoint therefore does advance at a story/region boundary. No save logic or source content has been changed. Startup warnings about `GAME:\Saves` and `g:\AutoSave.rl` remain separate observations; they have not been demonstrated to prevent the Xbox content-package saves that were written successfully.
+
+The user confirmed that loading the newest manual Guild save after the full process restart returned to the Guild. The preceding cutscene replayed, consistent with the saved checkpoint. This verifies persistence across the tested restart.
