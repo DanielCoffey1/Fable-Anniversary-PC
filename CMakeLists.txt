@@ -15,6 +15,7 @@ set(FABLEANNIVERSARY_SOURCES
     src/main.cpp
     src/startup_callbacks.cpp
     src/content_compat.cpp
+    src/fiber_compat.cpp
 )
 
 if(WIN32)

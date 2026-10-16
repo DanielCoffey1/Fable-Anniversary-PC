@@ -6,8 +6,24 @@
 #include <array>
 
 REX_EXTERN(sub_8247B120);
+REX_EXTERN(sub_83559A28);
+REX_EXTERN(sub_83559A38);
+REX_EXTERN(sub_83559A60);
+REX_EXTERN(sub_83559B30);
+REX_EXTERN(sub_8355C1C0);
+REX_EXTERN(sub_8355C228);
 
 namespace {
+// Four-instruction VM leaves verified at 835496C0..835496F0 and
+// 83549750..83549760: advance bytecode IP once, then tail-call the handler.
+template<PPCFunc* Handler>
+void AdvanceVmAndDispatch(PPCContext& ctx, uint8_t* base) {
+  REX_FUNC_PROLOGUE();
+  ctx.r11.u64 = REX_LOAD_U32(ctx.r4.u32 + 0x18);
+  ctx.r11.s64 += 1;
+  REX_STORE_U32(ctx.r4.u32 + 0x18, ctx.r11.u32);
+  Handler(ctx, base);
+}
 // Verified 0xC-byte leaf at 8247E5D8 in the hash-pinned local executable.
 // Keep this separate from the preceding virtual-dispatch routine.
 void StartupMemberCallback(PPCContext& ctx, uint8_t* base) {
@@ -94,6 +110,12 @@ void RegisterAnniversaryStartupCallbacks(rex::Runtime* runtime) {
     }
   };
   addMissing(0x8247E5D8, StartupMemberCallback);
+  addMissing(0x835496C0, AdvanceVmAndDispatch<sub_83559A28>);
+  addMissing(0x835496D0, AdvanceVmAndDispatch<sub_83559A38>);
+  addMissing(0x835496E0, AdvanceVmAndDispatch<sub_83559A60>);
+  addMissing(0x835496F0, AdvanceVmAndDispatch<sub_83559B30>);
+  addMissing(0x83549750, AdvanceVmAndDispatch<sub_8355C1C0>);
+  addMissing(0x83549760, AdvanceVmAndDispatch<sub_8355C228>);
   addMissing(0x8242ADF0, ScriptDispatchCallback);
   addMissing(0x83B8BB70, HeapReleaseCallback);
   addMissing(0x83B8BB98, HeapReleaseCallback);

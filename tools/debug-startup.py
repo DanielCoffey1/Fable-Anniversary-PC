@@ -21,7 +21,7 @@ try:
   if kind==3: base=struct.unpack_from('<Q',event.raw,40)[0]
   if kind==1:
    code=struct.unpack_from('<I',event.raw,16)[0];fault=struct.unpack_from('<Q',event.raw,56)[0]
-   if code==0xc0000005 and struct.unpack_from('<I',event.raw,168)[0] and not (0x100000000<=fault<0x100010000):
+   if code==0xc0000005 and struct.unpack_from('<I',event.raw,168)[0] and not (0x100000000<=fault<0x200000000 and struct.unpack_from('<Q',event.raw,48)[0]==0):
     k.ContinueDebugEvent(pid,tid,0x80010001); continue
    if code==0x80000003: breakpoints+=1
    if code in (0xe06d7363,0xc0000005,0xc0000409,0xc000001d,0xc0000094) or (code==0x80000003 and breakpoints>1):
@@ -35,6 +35,16 @@ try:
      if dbg.SymFromAddr(h,a,c.byref(disp),info):return info.raw[84:].split(b'\0')[0].decode(errors='replace')+f'+0x{disp.value:x}'
      return '?'
     print('FAULT:',symbol(rip),flush=True)
+    host_rdi=struct.unpack_from('<Q',raw,176)[0]
+    guest_context=c.create_string_buffer(272);read=c.c_size_t()
+    if k.ReadProcessMemory(h,host_rdi,guest_context,len(guest_context),c.byref(read)):
+     values=struct.unpack_from('<34Q',guest_context.raw)
+     order=[3,0,1,2]+list(range(4,32))
+     print('PPC REGISTERS:', ' '.join(f'r{reg}={values[i]:016x}' for i,reg in enumerate(order)),flush=True)
+     print('PPC LR/CTR:',hex(values[32]),hex(values[33]),flush=True)
+    globals_buf=c.create_string_buffer(32)
+    if k.ReadProcessMemory(h,0x183feb890,globals_buf,32,c.byref(read)):
+     print('PROFILE GLOBALS:', ' '.join(f'{x:08x}' for x in struct.unpack('>8I',globals_buf.raw)),flush=True)
     buf=c.create_string_buffer(8192);n=c.c_size_t();k.ReadProcessMemory(h,rsp,buf,len(buf),c.byref(n));seen=set()
     for off in range(0,n.value-7,8):
      a=struct.unpack_from('<Q',buf.raw,off)[0]
