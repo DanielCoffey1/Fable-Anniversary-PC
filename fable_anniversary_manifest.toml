@@ -21,3 +21,6 @@ includes = ["anniversary_leaf_callbacks.toml", "anniversary_materialized_callbac
 # Separate the preceding non-returning bugcheck stub from the context-switch body.
 0x839F3810 = { name = "ContextBugcheckStub_839F3810", size = 0x10 }
 0x839F3820 = { name = "ContextSwitchBody_839F3820", size = 0x40C }
+# Adjacent inspected null-check wrappers; final reachable instruction is a tail branch.
+0x8244C088 = { name = "NullCheckedThunk_8244C088", size = 0xC }
+0x8244C098 = { name = "NullCheckedThunk_8244C098", size = 0xC }
