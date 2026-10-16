@@ -1,6 +1,6 @@
 # Fable Anniversary PC
 
-Private standalone Xbox 360 static-recompilation research project using ReXGlue SDK v0.10.0. This is a separate project from Fable II and III. Initial analysis/build work is in progress; gameplay is not yet validated.
+Private standalone Xbox 360 static-recompilation research project using ReXGlue SDK v0.10.0. This is a separate project from Fable II and III. The native build reaches Oakvale and renders the opening character/dialogue scene. Controller/audio confirmation, sustained gameplay, save/reload, rendering, and pacing validation remain in progress.
 
 ## Local content
 
