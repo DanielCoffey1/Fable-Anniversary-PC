@@ -14,6 +14,7 @@ include(cmake/AnniversaryRuntime.cmake)
 set(FABLEANNIVERSARY_SOURCES
     src/main.cpp
     src/startup_callbacks.cpp
+    src/content_compat.cpp
 )
 
 if(WIN32)

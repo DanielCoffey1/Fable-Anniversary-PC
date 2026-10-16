@@ -113,9 +113,10 @@ endmacro()
 # Track completion through one stamp, with generated sources as byproducts.
 # The wrapper preserves an unchanged manifest's mtime after SDK version stamping.
 find_program(ANNIVERSARY_POWERSHELL NAMES powershell REQUIRED)
+file(GLOB ANNIVERSARY_GENERATED_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}/generated/default/*.h")
 add_custom_command(
     OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/generated/default/codegen.build.stamp"
-    BYPRODUCTS ${REXGLUE_ENTRYPOINT_GENERATED_SOURCES}
+    BYPRODUCTS ${REXGLUE_ENTRYPOINT_GENERATED_SOURCES} ${ANNIVERSARY_GENERATED_HEADERS}
     COMMAND ${ANNIVERSARY_POWERSHELL} -NoProfile -ExecutionPolicy Bypass -File "${CMAKE_CURRENT_SOURCE_DIR}/tools/Invoke-Codegen.ps1" -Recompiler $<TARGET_FILE:rex::rexglue> -Manifest "${CMAKE_CURRENT_SOURCE_DIR}/fable_anniversary_manifest.toml" -Stamp "${CMAKE_CURRENT_SOURCE_DIR}/generated/default/codegen.build.stamp"
     DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/tools/Invoke-Codegen.ps1"
     DEPFILE "${CMAKE_CURRENT_SOURCE_DIR}/generated/default/codegen.d"
