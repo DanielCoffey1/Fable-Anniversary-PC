@@ -13,6 +13,7 @@ include(generated/rexglue.cmake)
 # Sources
 set(FABLEANNIVERSARY_SOURCES
     src/main.cpp
+    src/startup_callbacks.cpp
 )
 
 if(WIN32)

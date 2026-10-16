@@ -30,3 +30,9 @@ The next runtime launch initialized the standard GPU plugin and audio, then stop
 The second callback map contains 3 non-overlapping volatile-register leaves with contiguous bounded control flow and address-construction references. Candidate address construction is limited to eight instructions after a high-half load and stops at branches or potential source-register clobbers. Entries must follow padding or a terminal instruction. The same bounded-CFG restrictions apply; entries with discontiguous reachable spans are rejected. Runtime testing remains necessary.
 
 A conservative reachability pass rejects candidates inside known functions, and rejects ambiguous ranges containing unresolved indirect jumps. This reduced the materialized-address set from 183 to three, removing switch labels that produced invalid generated branches. Two adjacent null-check wrappers at 8244C088 and 8244C098 were also inspected explicitly (conditional return, tail branch, then unreachable return) and mapped separately.
+
+## Runtime-specific entries
+
+`src/startup_callbacks.cpp` registers the observed `8247E5D8` member callback through the SDK dispatcher. Its inspected semantics are a member load at offset 34, argument 100, and a tail call to known function `8247B120`. It is outside the preceding virtual-dispatch routine; the conservative indirect-jump filter intentionally did not assume it was safe to map automatically.
+
+The following runtime failure was `83A01978`, an allocation callback with internal block `83A01A88` discovered separately. Its full inspected boundary is 14C bytes, ending before the shared virtual tail dispatcher at `83A01AC4`. An explicit function mapping retains the original allocation instructions.

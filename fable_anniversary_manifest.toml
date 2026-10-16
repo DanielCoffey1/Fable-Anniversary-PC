@@ -24,3 +24,5 @@ includes = ["anniversary_leaf_callbacks.toml", "anniversary_materialized_callbac
 # Adjacent inspected null-check wrappers; final reachable instruction is a tail branch.
 0x8244C088 = { name = "NullCheckedThunk_8244C088", size = 0xC }
 0x8244C098 = { name = "NullCheckedThunk_8244C098", size = 0xC }
+# Inspected allocation callback, including its internal block at 83A01A88.
+0x83A01978 = { name = "AllocationCallback_83A01978", size = 0x14C }
