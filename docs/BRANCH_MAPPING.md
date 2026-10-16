@@ -17,6 +17,8 @@ Code generation exposed one additional tail edge into a context-switch body that
 
 ## Indirect leaf callbacks
 
-The first runtime launch failed at unregistered callback `83661E60`. Its bounded control-flow graph spans `F4` bytes and ends in virtual tail dispatch. A scan of read-only pointer tables found 269 additional non-overlapping leaf entries that satisfy conservative checks: every reachable instruction decodes, branches stay within a bounded region or tail-call a known entry, no call instruction or LR modification occurs, and no nonvolatile integer/floating registers or condition fields are used. Entries stop before the next known function and before 1 KiB. The observed startup callback is included.
+The first runtime launch failed at unregistered callback `83661E60`. Its bounded control-flow graph spans `F4` bytes and ends in virtual tail dispatch. A scan of read-only pointer tables found 267 additional non-overlapping leaf entries that satisfy conservative checks: every reachable instruction decodes, branches stay within a bounded region or tail-call a known entry, no call instruction or LR modification occurs, and no nonvolatile integer/floating registers or condition fields are used. Each pointer reference must also have an adjacent code pointer, rejecting isolated code-looking values in unrelated data. Entries stop before the next known function and before 1 KiB. The observed startup callback is included.
 
 `anniversary_leaf_callbacks.toml` records each entry's size and a local-image pointer reference. These are Anniversary-specific mappings, not imported game code. Runtime testing is still required; passing discovery is not a gameplay guarantee.
+
+The first broad scan included an isolated value pointing to an epilogue inside another function; the generated-branch gate rejected that split. The adjacent-code-pointer filter removed that candidate and one other before the next runtime test.

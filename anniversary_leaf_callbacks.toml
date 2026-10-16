@@ -70,8 +70,6 @@
 0x82BF2F98 = { name = "LeafCallback_82BF2F98", size = 0x8 }
 # Read-only pointer reference 0x8223d0f0; bounded CFG, 2 instructions, volatile registers only.
 0x82BF2FA0 = { name = "LeafCallback_82BF2FA0", size = 0x8 }
-# Read-only pointer reference 0x82002334; bounded CFG, 19 instructions, volatile registers only.
-0x834F9AA8 = { name = "LeafCallback_834F9AA8", size = 0x4C }
 # Read-only pointer reference 0x821feef8; bounded CFG, 11 instructions, volatile registers only.
 0x835C0AB8 = { name = "LeafCallback_835C0AB8", size = 0x2C }
 # Read-only pointer reference 0x82202770; bounded CFG, 9 instructions, volatile registers only.
@@ -536,5 +534,3 @@
 0x83D01288 = { name = "LeafCallback_83D01288", size = 0x8 }
 # Read-only pointer reference 0x822c5390; bounded CFG, 2 instructions, volatile registers only.
 0x83D01290 = { name = "LeafCallback_83D01290", size = 0x8 }
-# Read-only pointer reference 0x8220c598; bounded CFG, 1 instructions, volatile registers only.
-0x83D62B84 = { name = "LeafCallback_83D62B84", size = 0x4 }
