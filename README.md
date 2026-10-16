@@ -23,7 +23,9 @@ Do not re-run project initialization over customized sources. Do not reuse Fable
 
 ## Albion Reborn
 
-Albion Reborn now discovers this built local project through `tools/run.ps1` and launches it from the Anniversary card. The installed launcher's Play button was tested: the resulting native process used borderless fullscreen, the selected 1440p resolution, full resolve readback, synchronous shader compilation, and the validated 30 FPS cap. The existing user-data/save location is preserved. Anniversary's ISO installer and downloadable runtime package are not yet included in Albion Reborn.
+Albion Reborn supports both this built local project and a managed Anniversary runtime package. Setup accepts the supported USA/Europe ISO or an extracted `default.xex`, checks the executable hash, and imports the `WellingtonGame` files. The packaged runtime retains borderless fullscreen, selected resolution, full resolve readback, synchronous shader compilation, and the validated 30 FPS cap. The existing Documents/fable_anniversary saves are preserved; the user verified Guild save loading and gameplay from the managed package.
+
+The private release agent includes Anniversary's main revision in its change signature, builds it in an isolated checkout, and packages its executable plus runtime DLLs. Launcher updates replace managed Anniversary runtime files alongside II/III. Save/content-preservation checks run before publication. The agent's scheduled check normally notices main changes within 15 minutes while its host is online. Players obtain packages through Albion Reborn's public releases without private-repository access; their own game content is required.
 
 ## Build dependency handling
 
