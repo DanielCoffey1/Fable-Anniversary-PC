@@ -1,0 +1,7 @@
+# Loading audio protection
+
+The initial playable build emitted loud noise while the Oakvale map loaded, then returned to normal dialogue/audio. A muted diagnostic launch measured the final six-channel big-endian float PCM at `XAudioSubmitRenderDriverFrame`: loading peaks reached 6.2e24, with roughly 120,000 samples above unity per reporting window. Intro and subsequent game audio stayed within the normal range. This is malformed mixer output rather than ordinary device starvation (the SDL backend fills an empty queue with zeros).
+
+`src/audio_compat.cpp` intercepts the final submission. Frames containing nonfinite samples or an absolute sample above 32 are replaced with a reusable zero frame before the SDK copies them into its playback queue. The threshold leaves substantial mixer headroom. Valid frames pass through the original SDK export unchanged; guest mixer buffers are not modified. The original driver handle, result, and guest source argument are preserved. Allocation is bounded to one 6 KB silent frame.
+
+A muted debugger replay caught the same corruption at guest caller `8369960C`, silenced 1,152 frames, and loaded Oakvale successfully. Later windows had normal peaks around 0.02–0.03. This protects output; the upstream mixer/effect initialization responsible for the malformed samples has not yet been established. An audible confirmation and further area-transition testing remain necessary.
