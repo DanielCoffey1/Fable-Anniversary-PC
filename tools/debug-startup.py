@@ -2,9 +2,13 @@
 # Requires the local executable and PDB. Stack entries are candidates, not an
 # unwound backtrace. Expected first-chance guest memory faults are passed to
 # ReXGlue. Stops the debug-launched game after a fatal exception or 90 seconds.
-import ctypes as c, pathlib, subprocess, struct, time
+import argparse, ctypes as c, pathlib, subprocess, struct, time, msvcrt
 from ctypes import wintypes as w
 root=pathlib.Path(__file__).resolve().parents[1]
+parser=argparse.ArgumentParser(description='Capture a native runtime failure during a local test.')
+parser.add_argument('--seconds',type=int,default=90,help='Maximum test duration (default: 90 seconds)')
+args=parser.parse_args()
+if not 1<=args.seconds<=7200:parser.error('--seconds must be between 1 and 7200')
 exe=root/'out/build/win-amd64-release/fable_anniversary.exe'
 k=c.WinDLL('kernel32',use_last_error=True); dbg=c.WinDLL('dbghelp',use_last_error=True)
 k.WaitForDebugEvent.argtypes=[c.c_void_p,w.DWORD]; k.ContinueDebugEvent.argtypes=[w.DWORD,w.DWORD,w.DWORD]
@@ -15,7 +19,7 @@ dbg.SymSetOptions(0x12)
 p=subprocess.Popen([str(exe),'--game_data_root',str(root/'game'),'--fullscreen=true','--resolution=720p','--async_shader_compilation=false'],cwd=exe.parent,creationflags=2)
 h=w.HANDLE(int(p._handle)); event=c.create_string_buffer(176); base=0; t0=time.monotonic(); initialized=False;breakpoints=0
 try:
- while time.monotonic()-t0<90:
+ while time.monotonic()-t0<args.seconds:
   if not k.WaitForDebugEvent(event,500): continue
   kind,pid,tid=struct.unpack_from('<III',event.raw)
   if kind==3: base=struct.unpack_from('<Q',event.raw,40)[0]
@@ -24,7 +28,7 @@ try:
    if code==0xc0000005 and struct.unpack_from('<I',event.raw,168)[0] and not (0x100000000<=fault<0x200000000 and struct.unpack_from('<Q',event.raw,48)[0]==0):
     k.ContinueDebugEvent(pid,tid,0x80010001); continue
    if code==0x80000003: breakpoints+=1
-   if code in (0xe06d7363,0xc0000005,0xc0000409,0xc000001d,0xc0000094) or (code==0x80000003 and breakpoints>1):
+   if code in (0xe06d7363,0xc0000005,0xc0000374,0xc0000409,0xc000001d,0xc0000094) or (code==0x80000003 and breakpoints>1):
     th=k.OpenThread(0x8|0x40,False,tid);ctx=c.create_string_buffer(1232+16);addr=(c.addressof(ctx)+15)&~15; c.c_uint32.from_address(addr+48).value=0x10001f
     if not k.GetThreadContext(th,addr): raise c.WinError(c.get_last_error())
     raw=c.string_at(addr,1232);rip=struct.unpack_from('<Q',raw,248)[0];rsp=struct.unpack_from('<Q',raw,152)[0]
@@ -35,6 +39,12 @@ try:
      if dbg.SymFromAddr(h,a,c.byref(disp),info):return info.raw[84:].split(b'\0')[0].decode(errors='replace')+f'+0x{disp.value:x}'
      return '?'
     print('FAULT:',symbol(rip),flush=True)
+    dump_dir=root/'work';dump_dir.mkdir(exist_ok=True)
+    dump_path=dump_dir/f'crash-{p.pid}-{int(time.time())}.dmp'
+    dbg.MiniDumpWriteDump.argtypes=[w.HANDLE,w.DWORD,w.HANDLE,w.DWORD,c.c_void_p,c.c_void_p,c.c_void_p]
+    with dump_path.open('wb') as dump:
+     ok=dbg.MiniDumpWriteDump(h,p.pid,w.HANDLE(msvcrt.get_osfhandle(dump.fileno())),0x1040,None,None,None)
+    print('MINIDUMP:',str(dump_path),'written' if ok else f'failed ({c.get_last_error()})',flush=True)
     host_rdi=struct.unpack_from('<Q',raw,176)[0]
     guest_context=c.create_string_buffer(272);read=c.c_size_t()
     if k.ReadProcessMemory(h,host_rdi,guest_context,len(guest_context),c.byref(read)):

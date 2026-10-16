@@ -1,6 +1,6 @@
 # Fable Anniversary PC
 
-Private standalone Xbox 360 static-recompilation research project using ReXGlue SDK v0.10.0. This is a separate project from Fable II and III. The native build reaches Oakvale and renders the opening character/dialogue scene. Controller/audio confirmation, sustained gameplay, save/reload, rendering, and pacing validation remain in progress.
+Private standalone Xbox 360 static-recompilation research project using ReXGlue SDK v0.10.0. This is a separate project from Fable II and III. Controller input, audio, the loading-noise protection, saving/reloading, and several quests have been user-tested. A later crash while speaking to a character remains under investigation; Windows reported native heap corruption (`C0000374`). Sustained stability, rendering, and pacing validation remain in progress.
 
 ## Local content
 
