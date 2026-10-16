@@ -9,6 +9,9 @@ game_root = "game"
 file_path = "game/default.xex"
 out_directory_path = "generated/default"
 includes = ["anniversary_leaf_callbacks.toml", "anniversary_materialized_callbacks.toml"]
+# Verified Anniversary CRT save/restore routines: native nonlocal unwinding.
+setjmp_address = 0x839BF9C0
+longjmp_address = 0x839BF580
 
 # Verified in the locally loaded, SHA-256-pinned Anniversary executable.
 [entrypoint.functions]
