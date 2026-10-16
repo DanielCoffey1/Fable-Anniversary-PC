@@ -3,7 +3,7 @@ param(
     [ValidateSet('720p','1080p','1440p','4k')][string]$Resolution='720p',
     [switch]$DryRun,
     [ValidateSet('none','fast','some','full')][string]$ReadbackResolve='full',
-    [ValidateRange(0,240)][int]$FrameLimit=0
+    [ValidateRange(0,240)][int]$FrameLimit=30
 )
 $ErrorActionPreference='Stop'
 $projectRoot=Split-Path $PSScriptRoot -Parent

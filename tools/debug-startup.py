@@ -16,7 +16,7 @@ k.OpenThread.argtypes=[w.DWORD,w.BOOL,w.DWORD]; k.OpenThread.restype=w.HANDLE
 k.GetThreadContext.argtypes=[w.HANDLE,c.c_void_p];k.ReadProcessMemory.argtypes=[w.HANDLE,c.c_void_p,c.c_void_p,c.c_size_t,c.POINTER(c.c_size_t)]
 dbg.SymInitializeW.argtypes=[w.HANDLE,w.LPCWSTR,w.BOOL];dbg.SymFromAddr.argtypes=[w.HANDLE,c.c_ulonglong,c.POINTER(c.c_ulonglong),c.c_void_p]
 dbg.SymSetOptions(0x12)
-p=subprocess.Popen([str(exe),'--game_data_root',str(root/'game'),'--fullscreen=true','--resolution=720p','--async_shader_compilation=false','--readback_resolve=full'],cwd=exe.parent,creationflags=2)
+p=subprocess.Popen([str(exe),'--game_data_root',str(root/'game'),'--fullscreen=true','--resolution=720p','--async_shader_compilation=false','--readback_resolve=full','--vsync=false','--anniversary_frame_limit=30'],cwd=exe.parent,creationflags=2)
 h=w.HANDLE(int(p._handle)); event=c.create_string_buffer(176); base=0; t0=time.monotonic(); initialized=False;breakpoints=0
 try:
  while time.monotonic()-t0<args.seconds:
