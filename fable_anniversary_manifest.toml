@@ -8,7 +8,7 @@ game_root = "game"
 [entrypoint]
 file_path = "game/default.xex"
 out_directory_path = "generated/default"
-includes = ["anniversary_leaf_callbacks.toml"]
+includes = ["anniversary_leaf_callbacks.toml", "anniversary_materialized_callbacks.toml"]
 
 # Verified in the locally loaded, SHA-256-pinned Anniversary executable.
 [entrypoint.functions]

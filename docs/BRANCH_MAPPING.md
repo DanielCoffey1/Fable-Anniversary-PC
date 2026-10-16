@@ -22,3 +22,9 @@ The first runtime launch failed at unregistered callback `83661E60`. Its bounded
 `anniversary_leaf_callbacks.toml` records each entry's size and a local-image pointer reference. These are Anniversary-specific mappings, not imported game code. Runtime testing is still required; passing discovery is not a gameplay guarantee.
 
 The first broad scan included an isolated value pointing to an epilogue inside another function; the generated-branch gate rejected that split. The adjacent-code-pointer filter removed that candidate and one other before the next runtime test.
+
+## Materialized callback addresses
+
+The next runtime launch initialized the standard GPU plugin and audio, then stopped at `8244C078`. Inspection shows a null-checking tail-call wrapper: conditional return followed by a branch to a known function. Its address is constructed in code at `8244C0FC`, not held in a read-only pointer table.
+
+The second callback map contains 183 non-overlapping volatile-register leaves with contiguous bounded control flow and address-construction references. Candidate address construction is limited to eight instructions after a high-half load and stops at branches or potential source-register clobbers. Entries must follow padding or a terminal instruction. The same bounded-CFG restrictions apply; entries with discontiguous reachable spans are rejected. Runtime testing remains necessary.
