@@ -18,6 +18,7 @@ set(FABLEANNIVERSARY_SOURCES
     src/fiber_compat.cpp
     src/audio_compat.cpp
     src/input_compat.cpp
+    src/frame_diagnostics.cpp
 )
 
 if(WIN32)
