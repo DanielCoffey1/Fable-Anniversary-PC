@@ -31,6 +31,12 @@ $env:PATH = "$clang;$ninja;$env:PATH"
 & (Join-Path $PSScriptRoot 'setup-sdk.ps1')
 if ($LASTEXITCODE -ne 0) { throw 'SDK setup failed.' }
 $sdk = Join-Path $projectRoot 'tooling/rexglue-sdk'
+if (!(Test-Path (Join-Path $projectRoot 'generated/default/sources.cmake'))) {
+    # CMake must see the generated source list on its first configure, or the
+    # recompilation object library would be absent from the initial build graph.
+    & (Join-Path $PSScriptRoot 'Invoke-Codegen.ps1') -Recompiler (Join-Path $sdk 'bin/rexglue.exe') -Manifest (Join-Path $projectRoot 'fable_anniversary_manifest.toml') -Stamp (Join-Path $projectRoot 'generated/default/codegen.build.stamp')
+    if (!$?) { throw 'Initial code generation failed.' }
+}
 & $cmake --preset win-amd64-release "-DCMAKE_PREFIX_PATH=$sdk"
 if ($LASTEXITCODE -ne 0) { throw 'CMake configuration failed.' }
 if ($ConfigureOnly) { return }
