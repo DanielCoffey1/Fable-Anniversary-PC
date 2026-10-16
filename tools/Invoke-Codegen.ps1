@@ -9,4 +9,6 @@ if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
 if($before.Hash -eq (Get-FileHash -LiteralPath $Manifest -Algorithm SHA256).Hash){
     (Get-Item -LiteralPath $Manifest).LastWriteTimeUtc=$writeTime
 }
+[IO.Directory]::CreateDirectory((Split-Path -Parent $Stamp)) | Out-Null
+if (!(Test-Path -LiteralPath $Stamp)) { [IO.File]::WriteAllText($Stamp,'') }
 [IO.File]::SetLastWriteTimeUtc($Stamp,[datetime]::UtcNow)
