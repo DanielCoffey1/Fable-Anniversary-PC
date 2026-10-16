@@ -2,8 +2,6 @@ param([ValidateRange(1,32)][int]$Jobs = 8, [switch]$ConfigureOnly)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path $PSScriptRoot -Parent
 Set-Location -LiteralPath $projectRoot
-$manifestPath=Join-Path $projectRoot 'fable_anniversary_manifest.toml'
-$manifestHashBefore=(Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash
 $xex = Join-Path $projectRoot 'game/default.xex'
 $expected = '2BBA8C23D8C2DA28741F166030FFACFDDF3AB35A4D459E818F07CAC58DEBFA77'
 if (!(Test-Path -LiteralPath $xex) -or
@@ -45,11 +43,3 @@ if ($unresolved) {
     $unresolved | ForEach-Object { Write-Warning "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" }
     throw 'Generated code contains unresolved branch/call traps; fix function boundaries before running.'
 }
-# SDK v0.10.0 stamps its version into the manifest even when bytes are unchanged,
-# after writing the output stamp. Restore metadata only after a successful build
-# and an exact byte-hash match, so Ninja does not regenerate on every host edit.
-$stamp=Join-Path $projectRoot 'generated/default/codegen.build.stamp'
-if((Test-Path -LiteralPath $stamp) -and $manifestHashBefore -eq (Get-FileHash -LiteralPath $manifestPath -Algorithm SHA256).Hash){
-    (Get-Item -LiteralPath $manifestPath).LastWriteTimeUtc=(Get-Item -LiteralPath $stamp).LastWriteTimeUtc
-}
-

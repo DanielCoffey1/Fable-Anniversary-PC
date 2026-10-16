@@ -24,3 +24,7 @@ Do not re-run project initialization over customized sources. Do not reuse Fable
 ## Albion Reborn
 
 Integration will follow successful standalone gameplay, controls/audio, rendering, save/reload, and pacing tests. No launcher support or downloadable runtime is claimed yet.
+
+## Build dependency handling
+
+The project-owned `cmake/AnniversaryRuntime.cmake` adapts the SDK v0.10.0 build glue to use one completion stamp and generated-source byproducts. `tools/Invoke-Codegen.ps1` restores the manifest timestamp only when an exact SHA-256 comparison confirms the SDK's version-stamp rewrite did not change its bytes. This avoids repeated full analysis for native host-source edits while preserving real input dependencies. An unchanged Ninja build was checked to report no work.
