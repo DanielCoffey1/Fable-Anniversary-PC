@@ -21,4 +21,8 @@ else()
     add_executable(fable_anniversary ${FABLEANNIVERSARY_SOURCES})
 endif()
 
-rexglue_setup_target(fable_anniversary)
+rexglue_setup_target(fable_anniversary GPU_PLUGINS xenos)
+
+if(WIN32)
+    target_link_options(fable_anniversary PRIVATE LINKER:/DEBUG:FULL LINKER:/INCREMENTAL:NO)
+endif()

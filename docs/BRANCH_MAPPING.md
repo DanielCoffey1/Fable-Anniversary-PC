@@ -14,3 +14,9 @@ The initial analysis found six unresolved direct branch targets. Each was inspec
 Mapped names describe observed behavior; they are not recovered original debug symbols. Loaded bytes and disassembly remain local under ignored `work/`.
 
 Code generation exposed one additional tail edge into a context-switch body that automatic discovery merged with the preceding non-returning bugcheck stub. Inspection verified the stub at `839F3810` occupies `10` bytes; the separate context-switch body starts at `839F3820`, spans `40C` bytes, and tail-calls `KeSetCurrentStackPointers` at `839F3C28`, before padding and the next prologue. Both starts are explicit so the edge has its own callable target. The build gate rejects unresolved-call placeholders as well as unresolved-branch placeholders.
+
+## Indirect leaf callbacks
+
+The first runtime launch failed at unregistered callback `83661E60`. Its bounded control-flow graph spans `F4` bytes and ends in virtual tail dispatch. A scan of read-only pointer tables found 269 additional non-overlapping leaf entries that satisfy conservative checks: every reachable instruction decodes, branches stay within a bounded region or tail-call a known entry, no call instruction or LR modification occurs, and no nonvolatile integer/floating registers or condition fields are used. Entries stop before the next known function and before 1 KiB. The observed startup callback is included.
+
+`anniversary_leaf_callbacks.toml` records each entry's size and a local-image pointer reference. These are Anniversary-specific mappings, not imported game code. Runtime testing is still required; passing discovery is not a gameplay guarantee.
