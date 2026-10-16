@@ -6,12 +6,9 @@
 #include <array>
 
 REX_EXTERN(sub_8247B120);
-REX_EXTERN(sub_83559A28);
-REX_EXTERN(sub_83559A38);
-REX_EXTERN(sub_83559A60);
-REX_EXTERN(sub_83559B30);
-REX_EXTERN(sub_8355C1C0);
-REX_EXTERN(sub_8355C228);
+#define ANNIVERSARY_VM_ADVANCE(address, handler) REX_EXTERN(handler);
+#include "vm_advance_callbacks.inc"
+#undef ANNIVERSARY_VM_ADVANCE
 
 namespace {
 // Four-instruction VM leaves verified at 835496C0..835496F0 and
@@ -110,12 +107,9 @@ void RegisterAnniversaryStartupCallbacks(rex::Runtime* runtime) {
     }
   };
   addMissing(0x8247E5D8, StartupMemberCallback);
-  addMissing(0x835496C0, AdvanceVmAndDispatch<sub_83559A28>);
-  addMissing(0x835496D0, AdvanceVmAndDispatch<sub_83559A38>);
-  addMissing(0x835496E0, AdvanceVmAndDispatch<sub_83559A60>);
-  addMissing(0x835496F0, AdvanceVmAndDispatch<sub_83559B30>);
-  addMissing(0x83549750, AdvanceVmAndDispatch<sub_8355C1C0>);
-  addMissing(0x83549760, AdvanceVmAndDispatch<sub_8355C228>);
+#define ANNIVERSARY_VM_ADVANCE(address, handler) addMissing(address, AdvanceVmAndDispatch<handler>);
+#include "vm_advance_callbacks.inc"
+#undef ANNIVERSARY_VM_ADVANCE
   addMissing(0x8242ADF0, ScriptDispatchCallback);
   addMissing(0x83B8BB70, HeapReleaseCallback);
   addMissing(0x83B8BB98, HeapReleaseCallback);
